@@ -1,6 +1,8 @@
 "use client";
 
-import React, { FormEvent, useCallback, useState } from "react";
+import axios from 'axios';
+import { signIn } from 'next-auth/react'
+import { useCallback, useState, FormEvent, ChangeEvent } from "react";
 
 import Input from "@/components/Input";
 
@@ -16,16 +18,41 @@ export default function Page() {
     setVariant((currentVariant) => currentVariant === 'login' ? 'register' : 'login' );
   }, [])
 
-  const handlerOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlerOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     })
   };
 
-  const handlerSubmit = (e: FormEvent<HTMLFormElement> ) => {
-    e.preventDefault()
-  }
+  const handlerSubmit = useCallback(async (e: FormEvent<HTMLFormElement> ) => {
+    e.preventDefault();
+    if(variant === 'login') {
+      try {
+        console.log('login')
+        // await signIn('credentials', {
+        //   email: form.email,
+        //   password: form.password,
+        //   // redirect: false,
+        //   // callbackUrl: '/'
+        // }).then(function(e) {
+        //   console.log(e)
+        // }).catch(function(e){
+        //   console.log(e)
+        // })
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      try {
+        await axios.post('/api/auth', {
+          ...form
+        })
+      }catch (e) {
+        console.log(e);
+      }
+    }
+  }, [form, variant])
 
   return (
     <div className={"relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-fixed bg-cover"}>
@@ -39,7 +66,6 @@ export default function Page() {
               { variant === 'login' ? 'Sign in' : 'Create an account' }
             </h2>
             <div className={"flex flex-col gap-4"}>
-
               <form onSubmit={handlerSubmit}>
                 {
                   variant === 'register' && (
