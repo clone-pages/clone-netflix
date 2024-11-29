@@ -1,24 +1,27 @@
 "use client"
 
 import React from "react";
+import { className } from "postcss-selector-parser";
 
 interface InputProps {
   id: string;
   value: string;
   label: string;
   type?: string;
+  className?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Input(props: InputProps) {
-  const {id, type, value, label, onChange} = props;
+  const {id, type, value, label, onChange, className} = props;
 
   return (
-    <div className={"relative"}>
+    <div className={`relative ${className}`}>
       <input
         className={"block rounded-md px-6 pt-6 pb-1 w-full text-md text-white bg-neutral-700 appearance-none focus:outline-none focus:ring-0 peer"}
         placeholder={""}
         id={id}
+        name={id}
         type={type}
         value={value}
         onChange={onChange}
